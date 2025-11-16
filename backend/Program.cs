@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Configuration ---
 builder.Services.AddDbContext<AppDbContext>(opts =>
-    opts.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=inventory.db"));
+    opts.UseSqlite(builder.Configuration.GetConnectionString("DataBase") ?? "Data Source=database.db"));
 
 builder.Services.AddCors(options =>
 {
@@ -37,7 +38,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // --- JWT setup ---
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "ThisIsAdevKeyReplaceInProd";
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "ThisIsAdevKeyReplaceInProd1234567890";
 var issuer = builder.Configuration["Jwt:Issuer"] ?? "inventory-starter";
 var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
 
@@ -59,11 +60,27 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
         ValidateIssuerSigningKey = true
     };
+
+    // check revocation
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = ctx =>
+        {
+            var revocationSvc = ctx.HttpContext.RequestServices.GetRequiredService<ITokenRevocationService>();
+            var jti = ctx.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+            if (!string.IsNullOrEmpty(jti) && revocationSvc.IsRevoked(jti))
+            {
+                ctx.Fail("Token has been revoked");
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<TokenService>();
+builder.Services.AddSingleton<ITokenRevocationService, InMemoryTokenRevocationService>();
 
 var app = builder.Build();
 
