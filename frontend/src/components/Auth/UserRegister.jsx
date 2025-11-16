@@ -1,0 +1,70 @@
+import React, { useState, useContext } from 'react'
+import '../topbar.css'
+import { AuthContext } from "../../context/AuthContext";
+
+function UserRegister() {
+    const { authregister } = useContext(AuthContext);
+    const [newAuth, setAuth] = useState({ user: '', pwd: '', company: '', first: '', last: '' })
+
+    async function register() {
+        await authregister(newAuth);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        register();
+    }
+
+    return (
+        <div>
+            <h3>Auth</h3>
+            <form className="loginform" onSubmit={handleSubmit}>
+                <input
+                    placeholder="username"
+                    type="text"
+                    name="username"
+                    autoComplete="username"
+                    value={newAuth.user}
+                    onChange={e => setAuth(s => ({ ...s, user: e.target.value }))}
+                    required
+                />
+                <input
+                    placeholder="password"
+                    type="password"
+                    name="password"
+                    autoComplete="current-password"
+                    minLength={6}
+                    value={newAuth.pwd}
+                    onChange={e => setAuth(s => ({ ...s, pwd: e.target.value }))}
+                    required
+                />
+                <input
+                    placeholder="first"
+                    type="text"
+                    name="first"
+                    value={newAuth.first}
+                    onChange={e => setAuth(s => ({ ...s, first: e.target.value }))}
+                    required
+                />
+                <input
+                    placeholder="last"
+                    type="text"
+                    name="last"
+                    value={newAuth.last}
+                    onChange={e => setAuth(s => ({ ...s, last: e.target.value }))}
+                    required
+                />
+                <input
+                    placeholder="company"
+                    type="text"
+                    name="company"
+                    value={newAuth.company}
+                    onChange={e => setAuth(s => ({ ...s, company: e.target.value }))}
+                    required
+                />
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    );
+}
+export default UserRegister;

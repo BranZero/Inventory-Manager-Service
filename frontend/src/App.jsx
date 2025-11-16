@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
-
-const API = import.meta.env.VITE_API_BASE || 'https://localhost:5001'
+import Topbar from './components/TopBar'
+import { AuthContext } from "./context/AuthContext";
+import UserRegister from './components/Auth/UserRegister';
 
 function App(){
-  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const { API, token } = useContext(AuthContext);
   const [items, setItems] = useState([])
   const [form, setForm] = useState({sku:'', name:'', qty:0})
-  const [auth, setAuth] = useState({user:'', pwd:''})
+  const [auth, setAuth] = useState({user:'', pwd:'', company:''})
 
-  useEffect(()=>{ loadItems() }, [token])
+  const services = [
+    { id: "hosting", label: "Hosting", href: "#" },
+    { id: "storage", label: "Cloud Storage", href: "#" },
+    { id: "compute", label: "Compute", href: "#" },
+    { id: "ai", label: "AI Services", href: "#" },
+  ];
 
+  // useEffect(()=>{ loadItems() }, [token])
   async function loadItems(){
     try{
       const res = await axios.get(`${API}/api/items`)
@@ -18,18 +25,6 @@ function App(){
     }catch(e){
       console.error(e)
     }
-  }
-
-  async function register(){
-    await axios.post(`${API}/api/auth/register`, { username: auth.user, password: auth.pwd })
-    alert('registered; now login')
-  }
-
-  async function login(){
-    const res = await axios.post(`${API}/api/auth/login`, { username: auth.user, password: auth.pwd })
-    const t = res.data.token
-    localStorage.setItem('token', t)
-    setToken(t)
   }
 
   async function addItem(e){
@@ -42,15 +37,15 @@ function App(){
   }
 
   return (
-    <div style={{padding:20}}>
-      <h2>Inventory Starter</h2>
+    <div>
+      <Topbar
+        services={services}
+      />
+      <div style={{paddingTop:56, width:1750}}></div>
 
       <section style={{marginBottom:20}}>
         <h3>Auth</h3>
-        <input placeholder="user" value={auth.user} onChange={e=>setAuth(s=>({...s,user:e.target.value}))} />
-        <input placeholder="pwd" type="password" value={auth.pwd} onChange={e=>setAuth(s=>({...s,pwd:e.target.value}))} />
-        <button onClick={register}>Register</button>
-        <button onClick={login}>Login</button>
+        <UserRegister></UserRegister>
         <div>Token: {token ? token.slice(0,40) + '...' : 'none'}</div>
       </section>
 
