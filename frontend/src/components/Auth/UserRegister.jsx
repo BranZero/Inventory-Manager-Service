@@ -56,7 +56,7 @@ function UserRegister({notFirst = false}) {
                 {notFirst &&
                     <select
                         value={newAuth.role}
-                        onChange={e => setFormData({ ...formData, role: e.target.value })}
+                        onChange={e => setAuth(s => ({ ...s, role: e.target.value }))}
                     >
                         <option value="Employee">Employee</option>
                         <option value="Manager">Manager</option>
