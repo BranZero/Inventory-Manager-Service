@@ -51,12 +51,7 @@ function Topbar({
       <div className="navbar">
         {services.map((svc) => (
           <a key={svc.id} href={svc.href}
-            className={"tab " + activeServiceId === svc.id ? "tab_active" : ""}
-            onClick={(e) => {
-              // Prevent navigating if using anchors
-              e.preventDefault();
-              onTabChange(svc.id);
-            }}
+            className={"tab " + (activeServiceId === svc.id ? "tab_active" : "")}
           >
             {svc.id}
           </a>
@@ -78,9 +73,9 @@ function Topbar({
           onClick={() => setDropdownOpen((v) => !v)}
         >
           {isAuthed ? (
-            <span className="userbtn__label">👤 {username} ({role})</span>
+            <span>👤 {username} ({role})</span>
           ) : (
-            <span className="userbtn__label">Login</span>
+            <span>Login</span>
           )}
         </button>
         {dropdownOpen && (

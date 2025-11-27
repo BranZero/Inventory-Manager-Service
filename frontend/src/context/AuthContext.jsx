@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const API = import.meta.env.VITE_API_BASE || 'https://localhost:5001'
     const [token, setToken] = useState(localStorage.getItem('token') || '');
     const [username, setUser] = useState(localStorage.getItem('username') || '')
-    const [company, setCompany] = useState(localStorage.getItem('company') || '')
+    const [company, setCompany] = useState(localStorage.getItem('company') || 'Inventory Management Service')
     const [role, setRole] = useState(localStorage.getItem('role') || '')
     const [isAuthed, setAuthState] = useState(token !== '');
 
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('company');
             localStorage.removeItem('role');
             setUser('');
-            setCompany('');
+            setCompany('Inventory Management Service');
             setRole('');
             setToken('');
             setAuthState(false);

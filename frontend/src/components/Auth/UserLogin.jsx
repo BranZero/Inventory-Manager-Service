@@ -19,7 +19,7 @@ function UserLogin() {
 
     if (showRegister) {
         return (
-            <div className='center_div'>
+            <div className='usermenu'>
                 <UserRegister notFirst={false} companyName='' />
                 <button
                     onClick={() => setShowRegister(false)}

@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import Topbar from './components/TopBar'
 import { AuthContext } from "./context/AuthContext";
-import UserRegister from './components/Auth/UserRegister';
 import AdminDashboard from "./components/AdminDashboard";
+import './app.css'
 
 function App(){
   const { API, token, role } = useContext(AuthContext);
@@ -13,10 +13,10 @@ function App(){
   const [showAdminPanel, setShowAdminPanel] = useState(false)
 
   const services = [
-    { id: "hosting", label: "Hosting", href: "#" },
-    { id: "storage", label: "Cloud Storage", href: "#" },
-    { id: "compute", label: "Compute", href: "#" },
-    { id: "ai", label: "AI Services", href: "#" },
+    { id: "hosting", label: "Hosting", href: "/hosting" },
+    { id: "storage", label: "Cloud Storage", href: "/storage" },
+    { id: "compute", label: "Compute", href: "/compute" },
+    { id: "ai", label: "AI Services", href: "/ai" },
   ];
 
   // useEffect(()=>{ loadItems() }, [token])
@@ -44,14 +44,14 @@ function App(){
         services={services}
         onAdminPanelClick={() => setShowAdminPanel(!showAdminPanel)}
       />
-      <div style={{paddingTop:56, width:1750}}></div>
+      <div className='topbuffer'>
+        
+      </div>
 
       {showAdminPanel && role === "Admin" && (
         <AdminDashboard></AdminDashboard>
       )}
       <section style={{marginBottom:20}}>
-        <h3>Auth</h3>
-        <UserRegister></UserRegister>
         <div>Token: {token ? token.slice(0,40) + '...' : 'none'}</div>
       </section>
 
