@@ -3,31 +3,24 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Theme variables (default dark) */
+  --bg: #1a1a1a;
+  --panel-bg: #1a1a1a;
+  --hover-btn: #111111;
+  --line: #2a2a2a;
+  --text: rgba(255,255,255,0.92);
+  --muted: rgba(255,255,255,0.65);
+  --accent: #2563eb;
+  --shadow: 0 6px 20px rgba(2,6,23,0.6);
+
+  color-scheme: dark;
+  color: var(--text);
+  background-color: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -44,10 +37,10 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.7s;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--hover-btn);
 }
 button:focus,
 button:focus-visible {
@@ -56,8 +49,18 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    /* Light theme overrides */
+    --bg: #ffffff;
+    --panel-bg: #ffffff;
+    --hover-btn: #f1f1f1;
+    --line: #e6e8eb;
+    --text: #1f1f1f;
+    --muted: #5b6b78;
+    --accent: #3b82f6;
+    --shadow: 0 8px 24px rgba(16,24,40,0.06);
+
+    color: var(--text);
+    background-color: var(--bg);
   }
   a:hover {
     color: #747bff;

@@ -1,16 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
-
-const API = import.meta.env.VITE_API_BASE || 'https://localhost:5001'
+import Topbar from './components/TopBar'
+import { AuthContext } from "./context/AuthContext";
+import AdminDashboard from "./components/AdminDashboard";
+import welcomeImg from './assets/welcome-img.png'
+import './app.css'
 
 function App(){
-  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const { API, token, role } = useContext(AuthContext);
   const [items, setItems] = useState([])
   const [form, setForm] = useState({sku:'', name:'', qty:0})
-  const [auth, setAuth] = useState({user:'', pwd:''})
+  const [auth, setAuth] = useState({user:'', pwd:'', company:''})
+  const [showAdminPanel, setShowAdminPanel] = useState(false)
 
-  useEffect(()=>{ loadItems() }, [token])
+  const services = [
+    { id: "hosting", label: "Hosting", href: "/hosting" },
+    { id: "storage", label: "Cloud Storage", href: "/storage" },
+    { id: "compute", label: "Compute", href: "/compute" },
+    { id: "ai", label: "AI Services", href: "/ai" },
+  ];
 
+  // useEffect(()=>{ loadItems() }, [token])
   async function loadItems(){
     try{
       const res = await axios.get(`${API}/api/items`)
@@ -18,18 +28,6 @@ function App(){
     }catch(e){
       console.error(e)
     }
-  }
-
-  async function register(){
-    await axios.post(`${API}/api/auth/register`, { username: auth.user, password: auth.pwd })
-    alert('registered; now login')
-  }
-
-  async function login(){
-    const res = await axios.post(`${API}/api/auth/login`, { username: auth.user, password: auth.pwd })
-    const t = res.data.token
-    localStorage.setItem('token', t)
-    setToken(t)
   }
 
   async function addItem(e){
@@ -42,15 +40,31 @@ function App(){
   }
 
   return (
-    <div style={{padding:20}}>
-      <h2>Inventory Starter</h2>
+    <div>
+      <Topbar
+        services={services}
+        onAdminPanelClick={() => setShowAdminPanel(!showAdminPanel)}
+      />
+      <div className='topbuffer'>
+        
+      </div>
 
+      {showAdminPanel && role === "Admin" ? (
+        <AdminDashboard></AdminDashboard>
+      ) : (
+        // Homepage Hero
+        <div className="hero">
+          <div className="hero__left">
+            <h1>INVENTORY SYSTEM</h1>
+            <p>Welcome to the Inventory System</p>
+            <button className="btn-primary">Get Started</button>
+          </div>
+          <div className="hero__card">
+            <img src={welcomeImg} alt="Welcome" className="welcome-img" />
+          </div>
+        </div>
+      )}
       <section style={{marginBottom:20}}>
-        <h3>Auth</h3>
-        <input placeholder="user" value={auth.user} onChange={e=>setAuth(s=>({...s,user:e.target.value}))} />
-        <input placeholder="pwd" type="password" value={auth.pwd} onChange={e=>setAuth(s=>({...s,pwd:e.target.value}))} />
-        <button onClick={register}>Register</button>
-        <button onClick={login}>Login</button>
         <div>Token: {token ? token.slice(0,40) + '...' : 'none'}</div>
       </section>
 
